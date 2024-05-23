@@ -1,7 +1,7 @@
 package com.cpulsivek.userservice.config;
 
-import com.cpulsivek.userservice.service.jwt.JwtAuthFilter;
-import com.cpulsivek.userservice.service.userDetails.UserDetailsServiceImpl;
+import com.cpulsivek.userservice.service.jwtService.JwtAuthFilter;
+import com.cpulsivek.userservice.service.user.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
