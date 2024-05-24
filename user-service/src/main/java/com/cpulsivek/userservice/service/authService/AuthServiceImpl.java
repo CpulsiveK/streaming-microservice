@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
     String username = signupRequestDto.getUsername();
     Optional<User> optionalUser = userRepository.findByUsername(username);
 
-    if (optionalUser.isPresent()) throw new DuplicateException(username + "already exists");
+    if (optionalUser.isPresent()) throw new DuplicateException(username + " already exists");
 
     User user = new User();
     user.setUsername(username);

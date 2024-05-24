@@ -30,7 +30,7 @@ public class Security {
     this.userDetailsServiceImpl = userDetailsServiceImpl;
   }
 
-  private static final String[] PUBLIC_URL = {"/api/v1/auth/**"};
+  private static final String[] PUBLIC_URL = {"/api/v1/user/auth/**"};
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
