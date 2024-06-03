@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,9 +50,8 @@ public class JwtImpl implements Jwt {
   }
 
   @Override
-  public Boolean validateToken(String token, UserDetails userDetails) {
-    final String username = extractEmail(token);
-    return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+  public Boolean validateToken(String token) {
+    return !isTokenExpired(token);
   }
 
   @Override

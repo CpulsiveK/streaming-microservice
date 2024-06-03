@@ -5,7 +5,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public interface Jwt {
   String extractEmail(String token);
@@ -18,7 +17,7 @@ public interface Jwt {
 
   Boolean isTokenExpired(String token);
 
-  Boolean validateToken(String token, UserDetails userDetails);
+  Boolean validateToken(String token);
 
   String generateToken(String username);
 
