@@ -3,6 +3,8 @@ package com.cpulsivek.uploadservice.config;
 import com.cpulsivek.uploadservice.dto.ExceptionDto;
 import com.cpulsivek.uploadservice.exception.DuplicateException;
 import com.cpulsivek.uploadservice.exception.UnauthorizedException;
+import com.cpulsivek.uploadservice.exception.VideoUploadException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import org.springframework.http.HttpStatus;
@@ -45,5 +47,27 @@ public class GlobalRestControllerAdvice {
             unauthorizedException.getMessage(),
             OffsetDateTime.now()),
         HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler(value = {ExpiredJwtException.class})
+  public ResponseEntity<ExceptionDto> handleExpiredJwtException(
+      ExpiredJwtException expiredJwtException, HttpServletRequest httpServletRequest) {
+    return new ResponseEntity<>(
+        new ExceptionDto(
+            httpServletRequest.getRequestURI(),
+            expiredJwtException.getMessage(),
+            OffsetDateTime.now()),
+        HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(value = {VideoUploadException.class})
+  public ResponseEntity<ExceptionDto> handleVideoUploadException(
+      VideoUploadException videoUploadException, HttpServletRequest httpServletRequest) {
+    return new ResponseEntity<>(
+        new ExceptionDto(
+            httpServletRequest.getRequestURI(),
+            videoUploadException.getMessage(),
+            OffsetDateTime.now()),
+        HttpStatus.BAD_REQUEST);
   }
 }
