@@ -135,3 +135,13 @@ Iupload-service/src/main/java/com/cpulsivek/uploadservice/entity/ETag.java,0\d\
 Wupload-service/src/main/java/com/cpulsivek/uploadservice/repository/EtagRepository.java,4\7\470c56132919531a2e172a62bcca45864d6bd5a6
 á
 Wupload-service/src/main/java/com/cpulsivek/uploadservice/repository/ETagRepository.java,e\b\eb8647a2ed3772bbed4fee6c0b2db5ea71a8b4da
+á
+Wupload-service/src/main/java/com/cpulsivek/uploadservice/service/jobs/ScheduledJob.java,3\b\3b81dbf4dfa87e2baa05df77a97ac1bab9b3848d
+Ü
+Vupload-service/src/main/java/com/cpulsivek/uploadservice/service/job/ScheduledJob.java,a\5\a5e0fcc4d0e49b1ad076b17d08342428e442fc0b
+}
+Mupload-service/src/main/java/com/cpulsivek/uploadservice/service/job/Job.java,a\0\a09b062e7aac98f2b99092b82729febbae8d7593
+Ç
+Rupload-service/src/main/java/com/cpulsivek/uploadservice/entity/CompletedPart.java,9\d\9deab990ef5a0ae176f52b5267c80502462b7cdb
+è
+_upload-service/src/main/java/com/cpulsivek/uploadservice/repository/CompletePartRepository.java,d\c\dcde94fea0c755a3ceba96f7e817dd3163a9d2cb

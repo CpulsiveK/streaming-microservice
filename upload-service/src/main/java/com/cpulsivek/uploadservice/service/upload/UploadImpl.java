@@ -3,11 +3,11 @@ package com.cpulsivek.uploadservice.service.upload;
 import com.cpulsivek.uploadservice.client.UserClient;
 import com.cpulsivek.uploadservice.dto.VideoMetadata;
 import com.cpulsivek.uploadservice.entity.Chunk;
-import com.cpulsivek.uploadservice.entity.ETag;
+import com.cpulsivek.uploadservice.entity.CompletedPart;
 import com.cpulsivek.uploadservice.entity.Video;
 import com.cpulsivek.uploadservice.exception.DuplicateException;
 import com.cpulsivek.uploadservice.repository.ChunkRepository;
-import com.cpulsivek.uploadservice.repository.ETagRepository;
+import com.cpulsivek.uploadservice.repository.CompletePartRepository;
 import com.cpulsivek.uploadservice.repository.VideoRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class UploadImpl implements Upload {
   private final UserClient userClient;
   private final VideoRepository videoRepository;
   private final ChunkRepository chunkRepository;
-  private final ETagRepository eTagRepository;
+  private final CompletePartRepository completePartRepository;
   private final Environment env;
 
   @Autowired
@@ -36,13 +36,13 @@ public class UploadImpl implements Upload {
       UserClient userClient,
       VideoRepository videoRepository,
       ChunkRepository chunkRepository,
-      ETagRepository eTagRepository,
+      CompletePartRepository completePartRepository,
       Environment env) {
     this.s3Client = s3Client;
     this.userClient = userClient;
     this.videoRepository = videoRepository;
     this.chunkRepository = chunkRepository;
-    this.eTagRepository = eTagRepository;
+    this.completePartRepository = completePartRepository;
     this.env = env;
   }
 
@@ -52,7 +52,7 @@ public class UploadImpl implements Upload {
       throws IOException {
     Optional<Video> optionalVideo = videoRepository.findByTitle(videoMetadata.title());
 
-    Chunk chunk;
+    List<Object> chunk;
     Video video;
 
     if (optionalVideo.isPresent()) {
@@ -62,7 +62,7 @@ public class UploadImpl implements Upload {
       video.setTitle(videoMetadata.title());
       video.setDescription(videoMetadata.description());
       video.setTotalChunks(videoMetadata.totalChunks());
-      video.getChunks().add(chunk);
+      video.getChunks().add((Chunk) chunk.getFirst());
     } else {
       String uploadId = initiateMultipartUpload(videoMetadata, file.getContentType());
       chunk = saveChunk(videoMetadata, file, uploadId);
@@ -72,7 +72,8 @@ public class UploadImpl implements Upload {
       video.setUploadId(uploadId);
       video.setDescription(videoMetadata.description());
       video.setTotalChunks(videoMetadata.totalChunks());
-      video.setChunks(List.of(chunk));
+      video.setCompletedParts(List.of((CompletedPart) chunk.getLast()));
+      video.setChunks(List.of((Chunk) chunk.getFirst()));
     }
     videoRepository.save(video);
   }
@@ -89,7 +90,7 @@ public class UploadImpl implements Upload {
     return createResponse.uploadId();
   }
 
-  private Chunk saveChunk(VideoMetadata videoMetadata, MultipartFile file, String uploadId)
+  private List<Object> saveChunk(VideoMetadata videoMetadata, MultipartFile file, String uploadId)
       throws IOException {
     Optional<Chunk> optionalChunk = chunkRepository.findByChunkId(videoMetadata.chunkNumber());
 
@@ -102,11 +103,10 @@ public class UploadImpl implements Upload {
     chunk.setChunkId(uploadPartResponse.eTag());
     chunk.setChunkNumber(videoMetadata.chunkNumber());
 
-    ETag eTag = new ETag();
-    eTag.setTag(uploadPartResponse.eTag());
-    eTagRepository.save(eTag);
+    CompletedPart completedPart = new CompletedPart();
+    completedPart.setTag(uploadPartResponse.eTag());
 
-    return chunkRepository.save(chunk);
+    return List.of(chunkRepository.save(chunk), completePartRepository.save(completedPart));
   }
 
   private UploadPartResponse uploadChunkToAws(

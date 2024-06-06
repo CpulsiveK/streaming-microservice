@@ -5,5 +5,4 @@ public record VideoMetadata(
     String description,
     String duration,
     int totalChunks,
-    int chunkNumber,
-    byte[] chunk) {}
+    int chunkNumber) {}

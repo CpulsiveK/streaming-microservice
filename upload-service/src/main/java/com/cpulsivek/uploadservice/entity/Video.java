@@ -19,15 +19,20 @@ public class Video {
   private Duration duration;
 
   private Long userId;
+
   private String uploadId;
 
   private Integer totalChunks;
 
-  @OneToMany(targetEntity = ETag.class)
-  private List<String> eTags;
+  @OneToMany(targetEntity = CompletedPart.class)
+  private List<CompletedPart> completedParts;
 
   @OneToMany(targetEntity = Chunk.class, fetch = FetchType.LAZY)
   private List<Chunk> chunks;
+
+  private String url;
+
+  private Boolean isUploaded = false;
 
   public String getTitle() {
     return title;
@@ -83,5 +88,29 @@ public class Video {
 
   public void setUserId(Long userId) {
     this.userId = userId;
+  }
+
+  public Boolean getIsUploaded() {
+    return isUploaded;
+  }
+
+  public void setIsUploaded(Boolean isUploaded) {
+    this.isUploaded = isUploaded;
+  }
+
+  public List<CompletedPart> getCompletedParts() {
+    return completedParts;
+  }
+
+  public void setCompletedParts(List<CompletedPart> completedParts) {
+    this.completedParts = completedParts;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
   }
 }
