@@ -12,6 +12,4 @@ import org.springframework.web.service.annotation.HttpExchange;
 public interface UserClient {
   @GetExchange("/profile")
   User findByUsername(@RequestHeader Map<String, String> headers, @RequestBody GetUserDto getUserDto);
-
-    User findByUsername(String token);
 }

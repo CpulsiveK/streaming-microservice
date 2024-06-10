@@ -2,6 +2,7 @@ package com.cpulsivek.userservice.entity;
 
 import jakarta.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -65,7 +66,7 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return null;
+    return Collections.emptyList();
   }
 
   public String getPassword() {

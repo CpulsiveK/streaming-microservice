@@ -1,6 +1,7 @@
 package com.cpulsivek.uploadservice.service.upload;
 
 import com.cpulsivek.uploadservice.client.UserClient;
+import com.cpulsivek.uploadservice.dto.GetUserDto;
 import com.cpulsivek.uploadservice.dto.User;
 import com.cpulsivek.uploadservice.dto.VideoMetadata;
 import com.cpulsivek.uploadservice.entity.Chunk;
@@ -13,7 +14,10 @@ import com.cpulsivek.uploadservice.repository.VideoRepository;
 import com.cpulsivek.uploadservice.service.jwt.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -32,6 +36,7 @@ public class UploadImpl implements Upload {
   private final CompletePartRepository completePartRepository;
   private final Environment env;
   private final Jwt jwt;
+  private static final String AUTHORIZATION = "Authorization";
 
   @Autowired
   public UploadImpl(
@@ -87,10 +92,11 @@ public class UploadImpl implements Upload {
       video.setTitle(videoMetadata.title());
       video.setUploadId(uploadId);
       video.setDescription(videoMetadata.description());
+      video.setDuration(Duration.parse(videoMetadata.duration()));
       video.setTotalChunks(videoMetadata.totalChunks());
       video.setCompletedParts(List.of((CompletedPart) chunk.getLast()));
       video.setChunks(List.of((Chunk) chunk.getFirst()));
-      video.setUserId(getUserId(httpServletRequest.getHeader("Authorization").substring(7)));
+      video.setUserId(getUserId(httpServletRequest));
     }
     videoRepository.save(video);
   }
@@ -141,8 +147,14 @@ public class UploadImpl implements Upload {
     return s3Client.uploadPart(uploadPartRequest, RequestBody.fromBytes(file.getBytes()));
   }
 
-  private Long getUserId(String token) {
-    User user = userClient.findByUsername(jwt.extractEmail(token));
+  private Long getUserId(HttpServletRequest httpServletRequest) {
+    GetUserDto getUserDto =
+        new GetUserDto(jwt.extractEmail(httpServletRequest.getHeader(AUTHORIZATION).substring(7)));
+
+    Map<String, String> headers = new HashMap<>();
+    headers.put(AUTHORIZATION, httpServletRequest.getHeader(AUTHORIZATION));
+
+    User user = userClient.findByUsername(headers, getUserDto);
     return user.id();
   }
 }

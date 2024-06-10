@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
@@ -20,10 +18,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User getUser(GetUserDto getUserDto) {
-    Optional<User> optionalUser = userRepository.findByUsername(getUserDto.username());
-
-    if (optionalUser.isEmpty()) throw new UsernameNotFoundException("");
-
-    return optionalUser.get();
+    return userRepository
+        .findByUsername(getUserDto.username())
+        .orElseThrow(() -> new UsernameNotFoundException("User does not exist"));
   }
 }
