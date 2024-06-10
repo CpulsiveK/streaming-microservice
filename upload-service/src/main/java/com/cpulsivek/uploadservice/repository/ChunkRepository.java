@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ChunkRepository extends JpaRepository<Chunk, Long> {
-    Optional<Chunk> findByChunkId(Integer chunkId);
+    Optional<Chunk> findByChunkNumber(Integer chunkId);
 }

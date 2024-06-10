@@ -48,26 +48,37 @@ public class UploadImpl implements Upload {
 
   @Override
   public void uploadVideo(
-      MultipartFile file, VideoMetadata videoMetadata, HttpServletRequest httpServletRequest)
+      MultipartFile file,
+      String title,
+      String description,
+      String duration,
+      int totalChunks,
+      int chunkNumber,
+      HttpServletRequest httpServletRequest)
       throws IOException {
-    Optional<Video> optionalVideo = videoRepository.findByTitle(videoMetadata.title());
+    VideoMetadata videoMetadata =
+        new VideoMetadata(title, description, duration, totalChunks, chunkNumber);
+
+    Optional<Video> optionalVideo = videoRepository.findByTitleAndIsUploaded(videoMetadata.title(), false);
 
     List<Object> chunk;
     Video video;
 
     if (optionalVideo.isPresent()) {
       video = optionalVideo.get();
+      System.out.println(video);
       chunk = saveChunk(videoMetadata, file, video.getUploadId());
 
       video.setTitle(videoMetadata.title());
       video.setDescription(videoMetadata.description());
       video.setTotalChunks(videoMetadata.totalChunks());
       video.getChunks().add((Chunk) chunk.getFirst());
+      video.getCompletedParts().add((CompletedPart) chunk.getLast());
     } else {
       String uploadId = initiateMultipartUpload(videoMetadata, file.getContentType());
       chunk = saveChunk(videoMetadata, file, uploadId);
-      video = new Video();
 
+      video = new Video();
       video.setTitle(videoMetadata.title());
       video.setUploadId(uploadId);
       video.setDescription(videoMetadata.description());
@@ -92,7 +103,7 @@ public class UploadImpl implements Upload {
 
   private List<Object> saveChunk(VideoMetadata videoMetadata, MultipartFile file, String uploadId)
       throws IOException {
-    Optional<Chunk> optionalChunk = chunkRepository.findByChunkId(videoMetadata.chunkNumber());
+    Optional<Chunk> optionalChunk = chunkRepository.findByChunkNumber(videoMetadata.chunkNumber());
 
     if (optionalChunk.isPresent())
       throw new DuplicateException("Chunk" + videoMetadata.chunkNumber() + "already " + "received");
@@ -105,6 +116,7 @@ public class UploadImpl implements Upload {
 
     CompletedPart completedPart = new CompletedPart();
     completedPart.setTag(uploadPartResponse.eTag());
+    completedPart.setPartNumber(videoMetadata.chunkNumber());
 
     return List.of(chunkRepository.save(chunk), completePartRepository.save(completedPart));
   }

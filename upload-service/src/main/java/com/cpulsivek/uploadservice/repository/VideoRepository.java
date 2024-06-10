@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Long> {
-    Optional<Video> findByTitle(String title);
+    Optional<Video> findByTitleAndIsUploaded(String title, Boolean isUploaded);
 
     List<Video> findAllByIsUploaded(Boolean isUploaded);
 }

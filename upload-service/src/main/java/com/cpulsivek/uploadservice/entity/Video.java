@@ -24,10 +24,10 @@ public class Video {
 
   private Integer totalChunks;
 
-  @OneToMany(targetEntity = CompletedPart.class)
+  @OneToMany(targetEntity = CompletedPart.class, fetch = FetchType.EAGER)
   private List<CompletedPart> completedParts;
 
-  @OneToMany(targetEntity = Chunk.class, fetch = FetchType.LAZY)
+  @OneToMany(targetEntity = Chunk.class, fetch =  FetchType.EAGER)
   private List<Chunk> chunks;
 
   private String url;

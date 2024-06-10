@@ -127,16 +127,6 @@ Jupload-service/src/main/java/com/cpulsivek/uploadservice/entity/Chunk.java,2\5
 Xupload-service/src/main/java/com/cpulsivek/uploadservice/repository/VideoRepository.java,0\f\0ffb3574e44951b00bf920969c883fdd9887d5c9
 à
 Xupload-service/src/main/java/com/cpulsivek/uploadservice/repository/ChunkRepository.java,c\e\ce5fc77f90959571fb9214752050190fcd99c2de
-z
-Jupload-service/src/main/java/com/cpulsivek/uploadservice/entity/ETags.java,b\5\b5f382ec51e9f60065b30bcbd6f73d4e460fcd76
-y
-Iupload-service/src/main/java/com/cpulsivek/uploadservice/entity/ETag.java,0\d\0db9d8105a8bcd58adc72752d098189573abc562
-á
-Wupload-service/src/main/java/com/cpulsivek/uploadservice/repository/EtagRepository.java,4\7\470c56132919531a2e172a62bcca45864d6bd5a6
-á
-Wupload-service/src/main/java/com/cpulsivek/uploadservice/repository/ETagRepository.java,e\b\eb8647a2ed3772bbed4fee6c0b2db5ea71a8b4da
-á
-Wupload-service/src/main/java/com/cpulsivek/uploadservice/service/jobs/ScheduledJob.java,3\b\3b81dbf4dfa87e2baa05df77a97ac1bab9b3848d
 Ü
 Vupload-service/src/main/java/com/cpulsivek/uploadservice/service/job/ScheduledJob.java,a\5\a5e0fcc4d0e49b1ad076b17d08342428e442fc0b
 }
@@ -145,3 +135,5 @@ Mupload-service/src/main/java/com/cpulsivek/uploadservice/service/job/Job.java,
 Rupload-service/src/main/java/com/cpulsivek/uploadservice/entity/CompletedPart.java,9\d\9deab990ef5a0ae176f52b5267c80502462b7cdb
 è
 _upload-service/src/main/java/com/cpulsivek/uploadservice/repository/CompletePartRepository.java,d\c\dcde94fea0c755a3ceba96f7e817dd3163a9d2cb
+Ö
+Uupload-service/src/main/java/com/cpulsivek/uploadservice/dto/VideoUploadResponse.java,2\3\23461c091b01149faa5af91f35981b3597303811
