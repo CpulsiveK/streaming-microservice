@@ -1,6 +1,7 @@
 package com.cpulsivek.uploadservice.service.upload;
 
 import com.cpulsivek.uploadservice.client.UserClient;
+import com.cpulsivek.uploadservice.dto.User;
 import com.cpulsivek.uploadservice.dto.VideoMetadata;
 import com.cpulsivek.uploadservice.entity.Chunk;
 import com.cpulsivek.uploadservice.entity.CompletedPart;
@@ -9,6 +10,7 @@ import com.cpulsivek.uploadservice.exception.DuplicateException;
 import com.cpulsivek.uploadservice.repository.ChunkRepository;
 import com.cpulsivek.uploadservice.repository.CompletePartRepository;
 import com.cpulsivek.uploadservice.repository.VideoRepository;
+import com.cpulsivek.uploadservice.service.jwt.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +31,7 @@ public class UploadImpl implements Upload {
   private final ChunkRepository chunkRepository;
   private final CompletePartRepository completePartRepository;
   private final Environment env;
+  private final Jwt jwt;
 
   @Autowired
   public UploadImpl(
@@ -37,13 +40,15 @@ public class UploadImpl implements Upload {
       VideoRepository videoRepository,
       ChunkRepository chunkRepository,
       CompletePartRepository completePartRepository,
-      Environment env) {
+      Environment env,
+      Jwt jwt) {
     this.s3Client = s3Client;
     this.userClient = userClient;
     this.videoRepository = videoRepository;
     this.chunkRepository = chunkRepository;
     this.completePartRepository = completePartRepository;
     this.env = env;
+    this.jwt = jwt;
   }
 
   @Override
@@ -59,14 +64,14 @@ public class UploadImpl implements Upload {
     VideoMetadata videoMetadata =
         new VideoMetadata(title, description, duration, totalChunks, chunkNumber);
 
-    Optional<Video> optionalVideo = videoRepository.findByTitleAndIsUploaded(videoMetadata.title(), false);
+    Optional<Video> optionalVideo =
+        videoRepository.findByTitleAndIsUploaded(videoMetadata.title(), false);
 
     List<Object> chunk;
     Video video;
 
     if (optionalVideo.isPresent()) {
       video = optionalVideo.get();
-      System.out.println(video);
       chunk = saveChunk(videoMetadata, file, video.getUploadId());
 
       video.setTitle(videoMetadata.title());
@@ -85,6 +90,7 @@ public class UploadImpl implements Upload {
       video.setTotalChunks(videoMetadata.totalChunks());
       video.setCompletedParts(List.of((CompletedPart) chunk.getLast()));
       video.setChunks(List.of((Chunk) chunk.getFirst()));
+      video.setUserId(getUserId(httpServletRequest.getHeader("Authorization").substring(7)));
     }
     videoRepository.save(video);
   }
@@ -133,5 +139,10 @@ public class UploadImpl implements Upload {
             .build();
 
     return s3Client.uploadPart(uploadPartRequest, RequestBody.fromBytes(file.getBytes()));
+  }
+
+  private Long getUserId(String token) {
+    User user = userClient.findByUsername(jwt.extractEmail(token));
+    return user.id();
   }
 }

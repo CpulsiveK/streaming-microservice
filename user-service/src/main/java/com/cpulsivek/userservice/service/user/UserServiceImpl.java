@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User getUser(GetUserDto getUserDto) {
-    Optional<User> optionalUser = userRepository.findByUsername(getUserDto.getUsername());
+    Optional<User> optionalUser = userRepository.findByUsername(getUserDto.username());
 
     if (optionalUser.isEmpty()) throw new UsernameNotFoundException("");
 

@@ -35,31 +35,25 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public User signup(SignupRequestDto signupRequestDto) {
-    String username = signupRequestDto.getUsername();
+    String username = signupRequestDto.username();
     Optional<User> optionalUser = userRepository.findByUsername(username);
 
     if (optionalUser.isPresent()) throw new DuplicateException(username + " already exists");
 
     User user = new User();
     user.setUsername(username);
-    user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
-    user.setRole("USER");
+    user.setPassword(passwordEncoder.encode(signupRequestDto.password()));
 
     return userRepository.save(user);
   }
 
   @Override
   public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-    String username = loginRequestDto.getUsername();
+    String username = loginRequestDto.username();
 
     authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(username, loginRequestDto.getPassword()));
+        new UsernamePasswordAuthenticationToken(username, loginRequestDto.password()));
 
-    LoginResponseDto loginResponseDto = new LoginResponseDto();
-    loginResponseDto.setToken(jwtService.generateToken(username));
-
-    return loginResponseDto;
+    return new LoginResponseDto(jwtService.generateToken(username));
   }
-
- 
 }

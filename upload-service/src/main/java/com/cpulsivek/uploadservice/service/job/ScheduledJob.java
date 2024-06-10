@@ -33,10 +33,6 @@ public class ScheduledJob implements Job {
 
     if (videos.isEmpty()) return;
 
-    System.out.println(videos.getFirst().getTotalChunks());
-    System.out.println(videos.getFirst().getChunks().size());
-    System.out.println(videos.getFirst().getCompletedParts().size());
-
     List<Video> updatedVideos =
         videos.stream()
             .filter(f -> f.getChunks().size() == f.getTotalChunks())

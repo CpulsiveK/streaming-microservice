@@ -1,3 +1,3 @@
 package com.cpulsivek.uploadservice.dto;
 
-public record User () {}
+public record User (Long id) {}

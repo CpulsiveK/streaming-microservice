@@ -27,7 +27,7 @@ public class Video {
   @OneToMany(targetEntity = CompletedPart.class, fetch = FetchType.EAGER)
   private List<CompletedPart> completedParts;
 
-  @OneToMany(targetEntity = Chunk.class, fetch =  FetchType.EAGER)
+  @OneToMany(targetEntity = Chunk.class, fetch = FetchType.EAGER)
   private List<Chunk> chunks;
 
   private String url;
