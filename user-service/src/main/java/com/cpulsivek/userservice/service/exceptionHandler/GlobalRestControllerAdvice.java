@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,6 +32,17 @@ public class GlobalRestControllerAdvice {
         new ExceptionDto(
             httpServletRequest.getRequestURI(),
             authenticationException.getMessage(),
+            OffsetDateTime.now()),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(value = {UsernameNotFoundException.class})
+  public ResponseEntity<ExceptionDto> handleUsernameNotFoundException(
+      UsernameNotFoundException usernameNotFoundException, HttpServletRequest httpServletRequest) {
+    return new ResponseEntity<>(
+        new ExceptionDto(
+            httpServletRequest.getRequestURI(),
+            usernameNotFoundException.getMessage(),
             OffsetDateTime.now()),
         HttpStatus.BAD_REQUEST);
   }

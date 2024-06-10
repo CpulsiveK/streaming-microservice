@@ -1,10 +1,11 @@
 package com.cpulsivek.userservice.config;
 
-import com.cpulsivek.userservice.service.jwt.JwtAuthFilter;
-import com.cpulsivek.userservice.service.userDetails.UserDetailsServiceImpl;
+import com.cpulsivek.userservice.service.jwtService.JwtAuthFilter;
+import com.cpulsivek.userservice.service.user.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,21 +24,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class Security {
   private final JwtAuthFilter jwtAuthFilter;
   private final UserDetailsServiceImpl userDetailsServiceImpl;
+  private final Environment env;
 
   @Autowired
-  public Security(JwtAuthFilter jwtAuthFilter, UserDetailsServiceImpl userDetailsServiceImpl) {
+  public Security(
+      JwtAuthFilter jwtAuthFilter, UserDetailsServiceImpl userDetailsServiceImpl, Environment env) {
     this.jwtAuthFilter = jwtAuthFilter;
     this.userDetailsServiceImpl = userDetailsServiceImpl;
+    this.env = env;
   }
 
-  private static final String[] PUBLIC_URL = {"/api/v1/auth/**"};
+  private static final String[] PUBLIC_URL = {"/api/v1/user/auth/**"};
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
     return httpSecurity
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
-            request -> request.requestMatchers(PUBLIC_URL).permitAll().anyRequest().authenticated())
+            request ->
+                request
+                    .requestMatchers(PUBLIC_URL)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
