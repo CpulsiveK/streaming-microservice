@@ -75,10 +75,6 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webflux</artifactId>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
@@ -88,6 +84,10 @@
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
 		</dependency>
 
 	</dependencies>
