@@ -2,7 +2,6 @@ package com.cpulsivek.uploadservice.controller;
 
 import com.cpulsivek.uploadservice.dto.VideoUploadResponse;
 import com.cpulsivek.uploadservice.service.upload.Upload;
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,9 +26,9 @@ public class UploadController {
       @RequestParam String description,
       @RequestParam String duration,
       @RequestParam String totalChunks,
-      @RequestParam String chunkNumber,
-      HttpServletRequest httpServletRequest) throws IOException {
-    upload.uploadVideo(file, title, description, duration, Integer.parseInt(totalChunks), Integer.parseInt(chunkNumber), httpServletRequest);
+      @RequestParam String chunkNumber) throws IOException {
+    upload.uploadVideo(file, title, description, duration, Integer.parseInt(totalChunks), Integer.parseInt(chunkNumber));
+    upload.setHeaders();
     return new ResponseEntity<>(new VideoUploadResponse("Chunk received"), HttpStatus.OK);
   }
 }

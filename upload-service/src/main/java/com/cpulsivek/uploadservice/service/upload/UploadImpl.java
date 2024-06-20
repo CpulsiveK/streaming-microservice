@@ -36,7 +36,11 @@ public class UploadImpl implements Upload {
   private final CompletePartRepository completePartRepository;
   private final Environment env;
   private final Jwt jwt;
+
+  private final HttpServletRequest httpServletRequest;
   private static final String AUTHORIZATION = "Authorization";
+
+  public static final Map<String, String> headers = new HashMap<>();
 
   @Autowired
   public UploadImpl(
@@ -46,7 +50,8 @@ public class UploadImpl implements Upload {
       ChunkRepository chunkRepository,
       CompletePartRepository completePartRepository,
       Environment env,
-      Jwt jwt) {
+      Jwt jwt,
+      HttpServletRequest httpServletRequest) {
     this.s3Client = s3Client;
     this.userClient = userClient;
     this.videoRepository = videoRepository;
@@ -54,6 +59,7 @@ public class UploadImpl implements Upload {
     this.completePartRepository = completePartRepository;
     this.env = env;
     this.jwt = jwt;
+    this.httpServletRequest = httpServletRequest;
   }
 
   @Override
@@ -63,8 +69,7 @@ public class UploadImpl implements Upload {
       String description,
       String duration,
       int totalChunks,
-      int chunkNumber,
-      HttpServletRequest httpServletRequest)
+      int chunkNumber)
       throws IOException {
     VideoMetadata videoMetadata =
         new VideoMetadata(title, description, duration, totalChunks, chunkNumber);
@@ -99,6 +104,11 @@ public class UploadImpl implements Upload {
       video.setUserId(getUserId(httpServletRequest));
     }
     videoRepository.save(video);
+  }
+
+  @Override
+  public void setHeaders() {
+    headers.put("Authorization", httpServletRequest.getHeader("Authorization"));
   }
 
   private String initiateMultipartUpload(VideoMetadata videoMetadata, String contentType) {

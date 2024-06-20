@@ -90,6 +90,12 @@
 			<artifactId>spring-webflux</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.cpulsivek</groupId>
+			<artifactId>httpclientwrapper</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

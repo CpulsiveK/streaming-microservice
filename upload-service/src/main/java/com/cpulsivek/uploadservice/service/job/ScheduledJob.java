@@ -1,7 +1,10 @@
 package com.cpulsivek.uploadservice.service.job;
 
+import com.cpulsivek.uploadservice.client.NotificationClient;
+import com.cpulsivek.uploadservice.dto.NotificationDto;
 import com.cpulsivek.uploadservice.entity.Video;
 import com.cpulsivek.uploadservice.repository.VideoRepository;
+import com.cpulsivek.uploadservice.service.upload.UploadImpl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -17,12 +20,18 @@ import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 public class ScheduledJob implements Job {
   private final VideoRepository videoRepository;
   private final S3Client s3Client;
+  private final NotificationClient notificationClient;
   private final Environment env;
 
   @Autowired
-  public ScheduledJob(VideoRepository videoRepository, S3Client s3Client, Environment env) {
+  public ScheduledJob(
+      VideoRepository videoRepository,
+      S3Client s3Client,
+      NotificationClient notificationClient,
+      Environment env) {
     this.videoRepository = videoRepository;
     this.s3Client = s3Client;
+    this.notificationClient = notificationClient;
     this.env = env;
   }
 
@@ -50,7 +59,8 @@ public class ScheduledJob implements Job {
                           .build();
 
                   s3Client.completeMultipartUpload(completeRequest);
-
+                  notificationClient.sendNotification(
+                      UploadImpl.headers, new NotificationDto("upload", "", false, video));
                   video.setIsUploaded(true);
                   video.setUrl(getObjectUrl(video.getTitle()));
                   return video;
