@@ -1,7 +1,16 @@
 
-–
-java:S1192o"SUse already-defined constant 'AUTHORIZATION' instead of duplicating its value here.(ôÚ°¾8øß¥°ƒ2J$ea959249-6a03-4eb6-8cbc-905c954f1dbc
-`
-java:S2386+"Make this member "protected".(²±Ôú8Ÿà¥°ƒ2J$b763644e-c862-4a2e-8278-664bd57686a0
-„
-java:S1117¤";Rename "headers" which hides the field declared at line 43.(­¡Ş¬üÿÿÿÿ8²à¥°ƒ2J$1d67b969-6866-497a-970e-9b74445d93bc
+R
+java:S3740§"/Provide the parametrized type for this generic.(áŸÖÙüÿÿÿÿ8ÌÆÖ„2
+p
+java:S1192p"SUse already-defined constant 'AUTHORIZATION' instead of duplicating its value here.(ôÚ°¾8ÌÆÖ„2
+:
+java:S2386*"Make this member "protected".(²±Ôú8½ÌÆÖ„2
+L
+java:S1481Q"*Remove this unused "chunk" local variable.(”ì¿ÿÿÿÿÿÿ8ÅÌÆÖ„2
+]	java:S125V"<This block of commented-out lines of code should be removed.(Åé÷Æşÿÿÿÿ8ÆÌÆÖ„2
+X	java:S125^"<This block of commented-out lines of code should be removed.(’­Ïí8ÇÌÆÖ„2
+]	java:S125b"<This block of commented-out lines of code should be removed.(ÑƒÃ§ûÿÿÿÿ8ÉÌÆÖ„2
+^
+java:S1144s"<Remove this unused private "initiateMultipartUpload" method.(ÙøØ¬şÿÿÿÿ8ÙÌÆÖ„2
+P
+java:S1144".Remove this unused private "saveChunk" method.(É‘»Çüÿÿÿÿ8ÚÌÆÖ„2

@@ -1,6 +1,5 @@
 package com.cpulsivek.uploadservice.service.upload;
 
-import com.cpulsivek.uploadservice.client.UserClient;
 import com.cpulsivek.uploadservice.dto.GetUserDto;
 import com.cpulsivek.uploadservice.dto.User;
 import com.cpulsivek.uploadservice.dto.VideoMetadata;
@@ -14,11 +13,7 @@ import com.cpulsivek.uploadservice.repository.VideoRepository;
 import com.cpulsivek.uploadservice.service.jwt.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -26,11 +21,15 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
+import util.CastResponse;
+import wrapper.HttpClientWrapper;
 
 @Service
 public class UploadImpl implements Upload {
   private final S3Client s3Client;
-  private final UserClient userClient;
+  private final HttpClientWrapper<GetUserDto> httpClientWrapper;
+
+  private final CastResponse<User> castResponse;
   private final VideoRepository videoRepository;
   private final ChunkRepository chunkRepository;
   private final CompletePartRepository completePartRepository;
@@ -45,7 +44,8 @@ public class UploadImpl implements Upload {
   @Autowired
   public UploadImpl(
       S3Client s3Client,
-      UserClient userClient,
+      HttpClientWrapper<GetUserDto> httpClientWrapper,
+      CastResponse<User> castResponse,
       VideoRepository videoRepository,
       ChunkRepository chunkRepository,
       CompletePartRepository completePartRepository,
@@ -53,7 +53,8 @@ public class UploadImpl implements Upload {
       Jwt jwt,
       HttpServletRequest httpServletRequest) {
     this.s3Client = s3Client;
-    this.userClient = userClient;
+    this.httpClientWrapper = httpClientWrapper;
+    this.castResponse = castResponse;
     this.videoRepository = videoRepository;
     this.chunkRepository = chunkRepository;
     this.completePartRepository = completePartRepository;
@@ -82,25 +83,25 @@ public class UploadImpl implements Upload {
 
     if (optionalVideo.isPresent()) {
       video = optionalVideo.get();
-      chunk = saveChunk(videoMetadata, file, video.getUploadId());
-
-      video.setTitle(videoMetadata.title());
-      video.setDescription(videoMetadata.description());
-      video.setTotalChunks(videoMetadata.totalChunks());
-      video.getChunks().add((Chunk) chunk.getFirst());
-      video.getCompletedParts().add((CompletedPart) chunk.getLast());
+      //      chunk = saveChunk(videoMetadata, file, video.getUploadId());
+      //
+      //      video.setTitle(videoMetadata.title());
+      //      video.setDescription(videoMetadata.description());
+      //      video.setTotalChunks(videoMetadata.totalChunks());
+      //      video.getChunks().add((Chunk) chunk.getFirst());
+      //      video.getCompletedParts().add((CompletedPart) chunk.getLast());
     } else {
-      String uploadId = initiateMultipartUpload(videoMetadata, file.getContentType());
-      chunk = saveChunk(videoMetadata, file, uploadId);
+      //      String uploadId = initiateMultipartUpload(videoMetadata, file.getContentType());
+      //      chunk = saveChunk(videoMetadata, file, uploadId);
 
       video = new Video();
-      video.setTitle(videoMetadata.title());
-      video.setUploadId(uploadId);
-      video.setDescription(videoMetadata.description());
-      video.setDuration(Duration.parse(videoMetadata.duration()));
-      video.setTotalChunks(videoMetadata.totalChunks());
-      video.setCompletedParts(List.of((CompletedPart) chunk.getLast()));
-      video.setChunks(List.of((Chunk) chunk.getFirst()));
+      //      video.setTitle(videoMetadata.title());
+      //      video.setUploadId(uploadId);
+      //      video.setDescription(videoMetadata.description());
+      //      video.setDuration(Duration.parse(videoMetadata.duration()));
+      //      video.setTotalChunks(videoMetadata.totalChunks());
+      //      video.setCompletedParts(List.of((CompletedPart) chunk.getLast()));
+      //      video.setChunks(List.of((Chunk) chunk.getFirst()));
       video.setUserId(getUserId(httpServletRequest));
     }
     videoRepository.save(video);
@@ -160,11 +161,13 @@ public class UploadImpl implements Upload {
   private Long getUserId(HttpServletRequest httpServletRequest) {
     GetUserDto getUserDto =
         new GetUserDto(jwt.extractEmail(httpServletRequest.getHeader(AUTHORIZATION).substring(7)));
-
-    Map<String, String> headers = new HashMap<>();
+    
     headers.put(AUTHORIZATION, httpServletRequest.getHeader(AUTHORIZATION));
 
-    User user = userClient.findByUsername(headers, getUserDto);
+    LinkedHashMap response =
+        httpClientWrapper.getRequest("api/v1/user/profile", headers, getUserDto);
+
+    User user = castResponse.castResponse(response, User.class);
     return user.id();
   }
 }

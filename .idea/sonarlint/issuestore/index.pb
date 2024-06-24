@@ -53,14 +53,8 @@ I
 upload-service/.gitignore,b\b\bbec91b89b979206bd95b9b124368f1940d5d423
 C
 upload-service/.env,a\e\ae1db081665dd7c651ca545903e05e31a01d7c20
-
-Oupload-service/src/main/java/com/cpulsivek/uploadservice/client/UserClient.java,c\d\cd80ac88cc216453e589df807cac17a970573e13
-v
-Fupload-service/src/main/java/com/cpulsivek/uploadservice/dto/User.java,8\c\8c7f9c2eb211eab9907d5e4dcd3117649c1d64fe
 á
 Wupload-service/src/main/java/com/cpulsivek/uploadservice/service/jwt/JwtAuthFilter.java,f\f\ff1d71e7046cf3bafe5a9d6aa435fb92d9f5a790
-|
-Lupload-service/src/main/java/com/cpulsivek/uploadservice/dto/GetUserDto.java,e\6\e6429e9b2dd97411d75f832d58e559af67e6727c
 x
 Huser-service/src/main/java/com/cpulsivek/userservice/dto/GetUserDto.java,6\f\6f37508b830874399b5cae2d324b1285b006f3dc
 }
@@ -87,8 +81,6 @@ Wuser-service/src/main/java/com/cpulsivek/userservice/service/jwtService/JwtServ
 Yupload-service/src/main/java/com/cpulsivek/uploadservice/controller/UploadController.java,f\7\f715eec120291ca9993ea431e4008b6bd3d5b47f
 ä
 Zupload-service/src/main/java/com/cpulsivek/uploadservice/exception/DuplicateException.java,7\7\77825d084581520de2aae68eb73a26bde90ce50b
-~
-Nupload-service/src/main/java/com/cpulsivek/uploadservice/dto/ExceptionDto.java,9\6\96608ec72005794244c0c5cd284635add925da62
 ã
 [user-service/src/main/java/com/cpulsivek/userservice/service/jwtService/JwtServiceImpl.java,4\8\4884e50c7520207884d7fbf4752848d041967fad
 É
@@ -105,14 +97,10 @@ Mupload-service/src/main/java/com/cpulsivek/uploadservice/config/Security.java,
 _upload-service/src/main/java/com/cpulsivek/uploadservice/config/GlobalRestControllerAdvice.java,0\e\0ea0899e5327430c47e2678b91e19ce2f16c90fe
 z
 Jupload-service/src/main/java/com/cpulsivek/uploadservice/entity/Video.java,2\e\2e7cd0b87697f5cb0617b4eaedc8e4c6e0ea8308
-
-Oupload-service/src/main/java/com/cpulsivek/uploadservice/dto/VideoMetaData.java,f\6\f63be83428b0684ca67aa5b47cc7f1f461e395c1
 z
 Jupload-service/src/main/java/com/cpulsivek/uploadservice/config/AwsS3.java,6\b\6b3ed9be2edb5469ba52c0933348d894fc3b7eeb
 C
 docker-compose.yaml,e\f\ef8def03dc8f162799089e9b5f4321201c8810d5
-
-Oupload-service/src/main/java/com/cpulsivek/uploadservice/dto/VideoMetadata.java,e\c\ec45c22b7501a0a3f28624ecf58510f0a1e11072
 z
 Jupload-service/src/main/java/com/cpulsivek/uploadservice/entity/Chunk.java,2\5\25ef84f01f08eee59e3533e5af365c0f489e6d60
 å
@@ -129,8 +117,6 @@ Mupload-service/src/main/java/com/cpulsivek/uploadservice/service/job/Job.java,
 Rupload-service/src/main/java/com/cpulsivek/uploadservice/entity/CompletedPart.java,9\d\9deab990ef5a0ae176f52b5267c80502462b7cdb
 è
 _upload-service/src/main/java/com/cpulsivek/uploadservice/repository/CompletePartRepository.java,d\c\dcde94fea0c755a3ceba96f7e817dd3163a9d2cb
-Ö
-Uupload-service/src/main/java/com/cpulsivek/uploadservice/dto/VideoUploadResponse.java,2\3\23461c091b01149faa5af91f35981b3597303811
 L
 notification-service/pom.xml,0\1\01f9e880c9ba9f01d23d7605950269a1f1661129
 I
@@ -171,9 +157,11 @@ inotification-service/src/main/java/com/cpulsivek/notification_service/exception
 ]notification-service/src/main/java/com/cpulsivek/notification_service/model/Notification.java,1\0\109c6ee12a10e0b7aeaf929b27a6570482ba5a66
 ú
 lnotification-service/src/main/java/com/cpulsivek/notification_service/repository/NotificationRepository.java,f\b\fb42499cec8e20b39de010f95117a36ff42069e5
-á
-Wupload-service/src/main/java/com/cpulsivek/uploadservice/client/NotificationClient.java,b\4\b4559e261c1568f4225928ea8ba740d61087007c
-Å
-Qupload-service/src/main/java/com/cpulsivek/uploadservice/dto/NotificationDto.java,5\a\5a6968c9947b2aace1ca6a693cb7bfb7b7fccf8a
 ú
 lnotification-service/src/main/java/com/cpulsivek/notification_service/controller/NotificationController.java,4\4\446fb69267a9dbf25960840f6d00f5f5b26e2d43
+~
+Nupload-service/src/main/java/com/cpulsivek/uploadservice/dto/ExceptionDto.java,9\6\96608ec72005794244c0c5cd284635add925da62
+|
+Lupload-service/src/main/java/com/cpulsivek/uploadservice/dto/GetUserDto.java,e\6\e6429e9b2dd97411d75f832d58e559af67e6727c
+v
+Fupload-service/src/main/java/com/cpulsivek/uploadservice/dto/User.java,8\c\8c7f9c2eb211eab9907d5e4dcd3117649c1d64fe

@@ -15,20 +15,6 @@ services:
     networks:
       - microservice-net
 
-  mongo:
-    container_name: ms_mongo
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: cpulsivek
-      MONGO_INITDB_ROOT_PASSWORD: "@Kalilinux3"
-    volumes:
-      - ./mongodata:/data/db
-    ports:
-      - 27017:27017
-    networks:
-      - microservice-net
-
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
