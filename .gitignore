@@ -1,2 +1,9 @@
 /mongodata/
 /data/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+*.env
