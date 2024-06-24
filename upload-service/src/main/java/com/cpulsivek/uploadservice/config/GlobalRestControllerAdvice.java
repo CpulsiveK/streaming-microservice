@@ -1,9 +1,9 @@
 package com.cpulsivek.uploadservice.config;
 
+import com.cpulsivek.uploadservice.dto.ExceptionDto;
 import com.cpulsivek.uploadservice.exception.DuplicateException;
 import com.cpulsivek.uploadservice.exception.UnauthorizedException;
 import com.cpulsivek.uploadservice.exception.VideoUploadException;
-import dto.ExceptionDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
