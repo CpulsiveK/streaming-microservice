@@ -165,3 +165,6 @@ Nupload-service/src/main/java/com/cpulsivek/uploadservice/dto/ExceptionDto.java
 Lupload-service/src/main/java/com/cpulsivek/uploadservice/dto/GetUserDto.java,e\6\e6429e9b2dd97411d75f832d58e559af67e6727c
 v
 Fupload-service/src/main/java/com/cpulsivek/uploadservice/dto/User.java,8\c\8c7f9c2eb211eab9907d5e4dcd3117649c1d64fe
+:
+
+.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
