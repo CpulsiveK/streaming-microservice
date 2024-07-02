@@ -168,3 +168,19 @@ Fupload-service/src/main/java/com/cpulsivek/uploadservice/dto/User.java,8\c\8c7
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
+A
+discovery/pom.xml,a\c\ac3e1555725512e9cd39c39120cd768bda4aa7b4
+?
+gateway/pom.xml,4\b\4b316bc60d1cfae51045f6fc8e58a8ae31f03ff3
+>
+discovery/.env,c\e\ceccdb792c5dac2c257188f6e983877b57783bd1
+U
+%data/prometheus/config/prometheus.yml,b\9\b978ff345909fa73ffba0a0c1e2371e903432e30
+~
+Nuser-service/src/main/java/com/cpulsivek/userservice/config/OpenAPIConfig.java,a\b\aba7d13b6da0f14ab1959193d72af23bade33332
+Ç
+Rupload-service/src/main/java/com/cpulsivek/uploadservice/config/OpenAPIConfig.java,6\f\6f5149ac3703ab55f1a86d506be81ee9eb1e315c
+è
+_notification-service/src/main/java/com/cpulsivek/notification_service/config/OpenAPIConfig.java,9\c\9c23d2c491175a0473741896cc8a684523dfa3cd
+u
+Egateway/src/main/java/com/cpulsivek/gateway/config/OpenAPIConfig.java,b\0\b083a6efa78b969db9271c790796489891a3634e

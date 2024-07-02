@@ -13,6 +13,7 @@ import com.cpulsivek.uploadservice.repository.VideoRepository;
 import com.cpulsivek.uploadservice.service.jwt.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -83,25 +84,25 @@ public class UploadImpl implements Upload {
 
     if (optionalVideo.isPresent()) {
       video = optionalVideo.get();
-      //      chunk = saveChunk(videoMetadata, file, video.getUploadId());
-      //
-      //      video.setTitle(videoMetadata.title());
-      //      video.setDescription(videoMetadata.description());
-      //      video.setTotalChunks(videoMetadata.totalChunks());
-      //      video.getChunks().add((Chunk) chunk.getFirst());
-      //      video.getCompletedParts().add((CompletedPart) chunk.getLast());
+      chunk = saveChunk(videoMetadata, file, video.getUploadId());
+
+      video.setTitle(videoMetadata.title());
+      video.setDescription(videoMetadata.description());
+      video.setTotalChunks(videoMetadata.totalChunks());
+      video.getChunks().add((Chunk) chunk.getFirst());
+      video.getCompletedParts().add((CompletedPart) chunk.getLast());
     } else {
-      //      String uploadId = initiateMultipartUpload(videoMetadata, file.getContentType());
-      //      chunk = saveChunk(videoMetadata, file, uploadId);
+      String uploadId = initiateMultipartUpload(videoMetadata, file.getContentType());
+      chunk = saveChunk(videoMetadata, file, uploadId);
 
       video = new Video();
-      //      video.setTitle(videoMetadata.title());
-      //      video.setUploadId(uploadId);
-      //      video.setDescription(videoMetadata.description());
-      //      video.setDuration(Duration.parse(videoMetadata.duration()));
-      //      video.setTotalChunks(videoMetadata.totalChunks());
-      //      video.setCompletedParts(List.of((CompletedPart) chunk.getLast()));
-      //      video.setChunks(List.of((Chunk) chunk.getFirst()));
+      video.setTitle(videoMetadata.title());
+      video.setUploadId(uploadId);
+      video.setDescription(videoMetadata.description());
+      video.setDuration(Duration.parse(videoMetadata.duration()));
+      video.setTotalChunks(videoMetadata.totalChunks());
+      video.setCompletedParts(List.of((CompletedPart) chunk.getLast()));
+      video.setChunks(List.of((Chunk) chunk.getFirst()));
       video.setUserId(getUserId(httpServletRequest));
     }
     videoRepository.save(video);
@@ -109,10 +110,10 @@ public class UploadImpl implements Upload {
 
   @Override
   public void setHeaders() {
-    headers.put("Authorization", httpServletRequest.getHeader("Authorization"));
+    headers.put(AUTHORIZATION, httpServletRequest.getHeader(AUTHORIZATION));
   }
 
-  private String initiateMultipartUpload(VideoMetadata videoMetadata, String contentType) {
+  String initiateMultipartUpload(VideoMetadata videoMetadata, String contentType) {
     CreateMultipartUploadRequest createRequest =
         CreateMultipartUploadRequest.builder()
             .bucket(env.getProperty("AWS_BUCKET_NAME"))
@@ -124,12 +125,13 @@ public class UploadImpl implements Upload {
     return createResponse.uploadId();
   }
 
-  private List<Object> saveChunk(VideoMetadata videoMetadata, MultipartFile file, String uploadId)
+  List<Object> saveChunk(VideoMetadata videoMetadata, MultipartFile file, String uploadId)
       throws IOException {
     Optional<Chunk> optionalChunk = chunkRepository.findByChunkNumber(videoMetadata.chunkNumber());
 
     if (optionalChunk.isPresent())
-      throw new DuplicateException("Chunk" + videoMetadata.chunkNumber() + "already " + "received");
+      throw new DuplicateException(
+          "Chunk: " + videoMetadata.chunkNumber() + " already " + "received");
 
     UploadPartResponse uploadPartResponse = uploadChunkToAws(videoMetadata, file, uploadId);
 
@@ -161,7 +163,7 @@ public class UploadImpl implements Upload {
   private Long getUserId(HttpServletRequest httpServletRequest) {
     GetUserDto getUserDto =
         new GetUserDto(jwt.extractEmail(httpServletRequest.getHeader(AUTHORIZATION).substring(7)));
-    
+
     headers.put(AUTHORIZATION, httpServletRequest.getHeader(AUTHORIZATION));
 
     LinkedHashMap response =

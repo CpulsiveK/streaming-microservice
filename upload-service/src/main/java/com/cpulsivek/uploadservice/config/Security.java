@@ -11,10 +11,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
 public class Security {
   private final JwtAuthFilter jwtAuthFilter;
+  private static final String[] PUBLIC_URL = {"/actuator/prometheus"};
 
   @Autowired
   public Security(JwtAuthFilter jwtAuthFilter) {
@@ -26,6 +27,8 @@ public class Security {
     return httpSecurity
         .csrf(AbstractHttpConfigurer::disable)
         .securityContext(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(
+            request -> request.requestMatchers(PUBLIC_URL).permitAll().anyRequest().authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

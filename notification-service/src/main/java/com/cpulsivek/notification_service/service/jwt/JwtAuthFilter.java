@@ -25,6 +25,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       HttpServletResponse httpServletResponse,
       FilterChain filterChain)
       throws ServletException, IOException {
+    if (httpServletRequest.getRequestURI().equals("/actuator/prometheus")) {
+      filterChain.doFilter(httpServletRequest, httpServletResponse);
+      return;
+    }
+
     String authHeader = httpServletRequest.getHeader("Authorization");
     String token = null;
 

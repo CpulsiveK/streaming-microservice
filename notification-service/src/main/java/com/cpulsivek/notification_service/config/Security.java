@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class Security {
   private final JwtAuthFilter jwtAuthFilter;
+  private static final String[] PUBLIC_URL = {"/actuator/**"};
 
   @Autowired
   public Security(JwtAuthFilter jwtAuthFilter) {
@@ -26,6 +27,8 @@ public class Security {
     return httpSecurity
         .csrf(AbstractHttpConfigurer::disable)
         .securityContext(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(
+            request -> request.requestMatchers(PUBLIC_URL).permitAll().anyRequest().authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
