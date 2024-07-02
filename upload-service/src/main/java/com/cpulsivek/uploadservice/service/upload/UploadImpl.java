@@ -1,6 +1,5 @@
 package com.cpulsivek.uploadservice.service.upload;
 
-import com.cpulsivek.uploadservice.client.UserClient;
 import com.cpulsivek.uploadservice.dto.GetUserDto;
 import com.cpulsivek.uploadservice.dto.User;
 import com.cpulsivek.uploadservice.dto.VideoMetadata;
@@ -15,10 +14,7 @@ import com.cpulsivek.uploadservice.service.jwt.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -26,34 +22,46 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
+import util.CastResponse;
+import wrapper.HttpClientWrapper;
 
 @Service
 public class UploadImpl implements Upload {
   private final S3Client s3Client;
-  private final UserClient userClient;
+  private final HttpClientWrapper<GetUserDto> httpClientWrapper;
+
+  private final CastResponse<User> castResponse;
   private final VideoRepository videoRepository;
   private final ChunkRepository chunkRepository;
   private final CompletePartRepository completePartRepository;
   private final Environment env;
   private final Jwt jwt;
+
+  private final HttpServletRequest httpServletRequest;
   private static final String AUTHORIZATION = "Authorization";
+
+  public static final Map<String, String> headers = new HashMap<>();
 
   @Autowired
   public UploadImpl(
       S3Client s3Client,
-      UserClient userClient,
+      HttpClientWrapper<GetUserDto> httpClientWrapper,
+      CastResponse<User> castResponse,
       VideoRepository videoRepository,
       ChunkRepository chunkRepository,
       CompletePartRepository completePartRepository,
       Environment env,
-      Jwt jwt) {
+      Jwt jwt,
+      HttpServletRequest httpServletRequest) {
     this.s3Client = s3Client;
-    this.userClient = userClient;
+    this.httpClientWrapper = httpClientWrapper;
+    this.castResponse = castResponse;
     this.videoRepository = videoRepository;
     this.chunkRepository = chunkRepository;
     this.completePartRepository = completePartRepository;
     this.env = env;
     this.jwt = jwt;
+    this.httpServletRequest = httpServletRequest;
   }
 
   @Override
@@ -63,8 +71,7 @@ public class UploadImpl implements Upload {
       String description,
       String duration,
       int totalChunks,
-      int chunkNumber,
-      HttpServletRequest httpServletRequest)
+      int chunkNumber)
       throws IOException {
     VideoMetadata videoMetadata =
         new VideoMetadata(title, description, duration, totalChunks, chunkNumber);
@@ -101,7 +108,12 @@ public class UploadImpl implements Upload {
     videoRepository.save(video);
   }
 
-  private String initiateMultipartUpload(VideoMetadata videoMetadata, String contentType) {
+  @Override
+  public void setHeaders() {
+    headers.put(AUTHORIZATION, httpServletRequest.getHeader(AUTHORIZATION));
+  }
+
+  String initiateMultipartUpload(VideoMetadata videoMetadata, String contentType) {
     CreateMultipartUploadRequest createRequest =
         CreateMultipartUploadRequest.builder()
             .bucket(env.getProperty("AWS_BUCKET_NAME"))
@@ -113,12 +125,13 @@ public class UploadImpl implements Upload {
     return createResponse.uploadId();
   }
 
-  private List<Object> saveChunk(VideoMetadata videoMetadata, MultipartFile file, String uploadId)
+  List<Object> saveChunk(VideoMetadata videoMetadata, MultipartFile file, String uploadId)
       throws IOException {
     Optional<Chunk> optionalChunk = chunkRepository.findByChunkNumber(videoMetadata.chunkNumber());
 
     if (optionalChunk.isPresent())
-      throw new DuplicateException("Chunk" + videoMetadata.chunkNumber() + "already " + "received");
+      throw new DuplicateException(
+          "Chunk: " + videoMetadata.chunkNumber() + " already " + "received");
 
     UploadPartResponse uploadPartResponse = uploadChunkToAws(videoMetadata, file, uploadId);
 
@@ -151,10 +164,12 @@ public class UploadImpl implements Upload {
     GetUserDto getUserDto =
         new GetUserDto(jwt.extractEmail(httpServletRequest.getHeader(AUTHORIZATION).substring(7)));
 
-    Map<String, String> headers = new HashMap<>();
     headers.put(AUTHORIZATION, httpServletRequest.getHeader(AUTHORIZATION));
 
-    User user = userClient.findByUsername(headers, getUserDto);
+    LinkedHashMap response =
+        httpClientWrapper.getRequest("api/v1/user/profile", headers, getUserDto);
+
+    User user = castResponse.castResponse(response, User.class);
     return user.id();
   }
 }

@@ -1,8 +1,6 @@
 package com.cpulsivek.uploadservice.config;
 
 import com.cpulsivek.uploadservice.service.jwt.JwtAuthFilter;
-import java.util.List;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +10,12 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
 public class Security {
   private final JwtAuthFilter jwtAuthFilter;
+  private static final String[] PUBLIC_URL = {"/actuator/prometheus"};
 
   @Autowired
   public Security(JwtAuthFilter jwtAuthFilter) {
@@ -27,21 +25,10 @@ public class Security {
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
     return httpSecurity
-            .cors(
-                    cors ->
-                            cors.configurationSource(
-                                    request -> {
-                                      CorsConfiguration configuration = new CorsConfiguration();
-                                      configuration.setAllowedOrigins(
-                                              List.of("http://localhost:4200"));
-                                      configuration.setAllowedMethods(
-                                              List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
-                                      configuration.setAllowedHeaders(
-                                              List.of("Content-Type", "Content-Disposition", "Authorization"));
-                                      return configuration;
-                                    }))
         .csrf(AbstractHttpConfigurer::disable)
         .securityContext(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(
+            request -> request.requestMatchers(PUBLIC_URL).permitAll().anyRequest().authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
